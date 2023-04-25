@@ -18,3 +18,17 @@ stat_agregee <- function(var, fun = "moyenne", ...) {
   }
   return(x)
 }
+
+
+#' Title
+#'
+#' @param annee 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+decennie_a_partir_annee <- function(annee) {
+  return(annee - annee %%
+           10)
+}
