@@ -7,10 +7,12 @@ if (!require("tidyverse")) install.packages("tidyverse")
 
 library(tidyverse)
 
-# j'importe les données avec read_csv2 parce que c'est un csv avec des ; et que read_csv attend comme separateur des ,
-df <- readr::read_csv2(
-  "individu_reg.csv",
-  col_select = c("region", "aemm", "aged", "anai", "catl", "cs1", "cs2", "cs3", "couple", "na38", "naf08", "pnai12", "sexe", "surf", "tp", "trans", "ur")
+# j'importe les données avec read_csv2 parce que c'est un csv avec des ; et que read_csv attend comme separateur des , ----
+## test ----
+### test 3 ----
+df <- arrow::read_parquet(
+  file = "./individu_reg.parquet",
+  col_select =  c("region", "aemm", "aged", "anai", "catl", "cs1", "cs2", "cs3", "couple", "na38", "naf08", "pnai12", "sexe", "surf", "tp", "trans", "ur")
 )
 
 df <- df %>%
@@ -59,26 +61,15 @@ df$sexe <- df$sexe %>%
   as.character() %>%
   fct_recode(Homme = "1", Femme = "2")
 
-# fonction de stat agregee
-fonction_de_stat_agregee <- function(a, b = "moyenne", ...) {
-  if (b == "moyenne") {
-    x <- mean(a, na.rm = TRUE, ...)
-  } else if (b == "ecart-type" || b == "sd") {
-    x <- sd(a, na.rm = TRUE, ...)
-  } else if (b == "variance") {
-    x <- var(a, na.rm = TRUE, ...)
-  }
-  return(x)
-}
 
-fonction_de_stat_agregee(rnorm(10))
-fonction_de_stat_agregee(rnorm(10), "ecart-type")
-fonction_de_stat_agregee(rnorm(10), "variance")
+source("./fonctions.R",encoding="UTF-8")
+stat_agregee(rnorm(10))
+stat_agregee(rnorm(10), "ecart-type")
+stat_agregee(rnorm(10), "variance")
 
-fonction_de_stat_agregee(df %>% filter(sexe == "Homme") %>% pull(aged))
-fonction_de_stat_agregee(df %>% filter(sexe == "Femme") %>% pull(aged))
+stat_agregee(df %>% filter(sexe == "Homme") %>% pull(aged))
+stat_agregee(df %>% filter(sexe == "Femme") %>% pull(aged))
 
-api_token <- "trotskitueleski$1917"
 
 # modelisation
 df3 <- df %>%
